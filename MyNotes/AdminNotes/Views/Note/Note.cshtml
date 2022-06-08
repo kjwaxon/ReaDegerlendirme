@@ -1,0 +1,58 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+<form method="POST" id="form">
+    <div class="form-group">
+        <input type="text" class="form-control" id="title" placeholder="Title" />
+
+    </div>
+    <div class="form-group">
+        <input type="text" class="form-control" id="subtitle" placeholder="SubTitle" />
+    </div>
+    <div id="summernote">
+
+    </div>
+    <div class="form-group">
+        <input type="file" class="form-control" name="ImagePath" />
+    </div>
+    @Html.DropDownList("Categories", null, "Please Select a Category!", new { @class = "form-control" })
+    <br />
+    <button type="button" onclick="save()" class="btn btn-primary">Save</button>
+
+</form>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <script>
+  $(document).ready(function() {
+  $('#summernote').summernote();
+});
+
+     function save() {
+        var title = document.getElementById("title");
+        var subtitle = document.getElementById("subtitle");
+        var content = $('#summernote').summernote('code');
+        var category = document.getElementById("Categories");
+        var form = document.getElementById("form");
+
+       var formData = new FormData(form);
+
+        formData.append("title", title.value);
+        formData.append("subtitle", subtitle.value);
+        formData.append("content", content);
+        formData.append("categoryid",category.value);
+
+        var url = '/Note/Save';
+
+        fetch(url, {
+                method: 'POST',
+                body: formData
+            }).then(res => res.json())
+            .then(result => {
+                alert("Note Saved!");
+            })
+    }
+
+    </script>
+
+}
